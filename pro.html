@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>https://github.com/Sutharviraj/student-community-app.git
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>વિદ્યાર્થી કમ્યુનિટી પ્લેટફોર્મ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/css/phosphor.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .glassmorphism { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .loader { border: 4px solid #f3f3f3; border-radius: 50%; border-top: 4px solid #4f46e5; width: 40px; height: 40px; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .message { max-width: 70%; }
+        .message.sent { margin-left: auto; background-color: #4f46e5; color: white; }
+        .message.received { background-color: #e5e7eb; color: #1f2937; }
+        .group-link.active { background-color: #4338ca; color: white; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Notification Sound -->
+    <audio id="notification-sound" src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaW5nIG1hZGUgYnkgUXVpbiBTb25ncyBvbiBGb3ggU3R1ZGlvcyBUU09OAAAAEQAAAZGFsbGIBDUNvbXBvcyBlZCBTb25nNDQBAAAA//uQRCgAAAAAAN//3kTJQWzIFkRIwzMjI2MjMzMzEzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzA0VFRVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'"></audio>
+    
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[100] hidden">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-slate-800">
+        <div class="w-full max-w-sm p-8 space-y-8 glassmorphism rounded-2xl shadow-lg text-white">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold">પ્લેટફોર્મ લોગિન</h2>
+                <p class="mt-2 text-gray-300">તમારું ઇમેઇલ અને પાસવર્ડ દાખલ કરો</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <input id="login-email" type="email" required class="w-full px-3 py-3 border border-gray-600 bg-gray-700 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ઇમેઇલ">
+                <input id="login-password" type="password" required class="w-full px-3 py-3 border border-gray-600 bg-gray-700 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="પાસવર્ડ">
+                <button type="submit" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 rounded-md font-semibold">લોગિન કરો</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App Screen -->
+    <div id="app-screen" class="hidden h-screen w-full flex overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-800 text-gray-200 flex flex-col flex-shrink-0">
+            <!-- User Profile -->
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg" id="user-initials"></div>
+                    <div>
+                        <p class="font-semibold text-sm" id="user-name-display"></p>
+                        <p class="text-xs text-gray-400 capitalize" id="user-type-display"></p>
+                    </div>
+                </div>
+                 <button id="change-password-btn" class="mt-3 w-full text-xs text-center text-indigo-400 hover:underline">પાસવર્ડ બદલો</button>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 p-2 space-y-4 custom-scrollbar overflow-y-auto">
+                <div id="teacher-menu" class="hidden p-2">
+                    <h3 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">મેનેજમેન્ટ</h3>
+                     <div class="mt-2 space-y-1">
+                        <a href="#" id="manage-users-btn" class="flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-300 hover:bg-slate-700 hover:text-white"><i class="ph-users-four mr-3 text-lg"></i> વપરાશકર્તાઓ</a>
+                        <a href="#" id="manage-groups-btn" class="flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-300 hover:bg-slate-700 hover:text-white"><i class="ph-chats-circle mr-3 text-lg"></i> ગ્રુપ્સ</a>
+                    </div>
+                </div>
+                <!-- Channels -->
+                <div class="p-2">
+                    <h3 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">વિષય ગ્રુપ્સ</h3>
+                    <div id="subject-groups-list" class="mt-2 space-y-1"></div>
+                </div>
+                 <div class="p-2">
+                    <h3 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">વિદ્યાર્થી ગ્રુપ</h3>
+                    <div id="student-groups-list" class="mt-2 space-y-1"></div>
+                </div>
+            </nav>
+            
+            <!-- Logout -->
+            <div class="p-4 border-t border-slate-700"><button id="logout-btn" class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-300 bg-slate-700 hover:bg-red-500 hover:text-white rounded-md transition-colors"><i class="ph-sign-out mr-2 text-lg"></i> લૉગ આઉટ</button></div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col bg-gray-100">
+             <header class="flex items-center justify-between p-4 border-b border-gray-200 bg-white shadow-sm">
+                <h1 id="channel-title" class="text-xl font-bold text-gray-900">ગ્રુપ પસંદ કરો</h1>
+                <div id="header-actions"></div>
+            </header>
+            <div id="chat-container" class="flex-1 flex flex-col overflow-hidden">
+                <div id="chat-messages" class="flex-1 p-6 space-y-4 overflow-y-auto custom-scrollbar">
+                     <div class="flex items-center justify-center h-full text-gray-500">વાતચીત શરૂ કરવા માટે ડાબી બાજુથી ગ્રુપ પસંદ કરો.</div>
+                </div>
+                 <div id="message-form-container" class="p-4 bg-white border-t border-gray-200 hidden">
+                    <form id="message-form" class="flex items-center space-x-3">
+                        <input id="message-input" type="text" placeholder="તમારો સંદેશ લખો..." autocomplete="off" class="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50">
+                        <label id="file-upload-label" for="file-upload-input" class="p-3 text-gray-600 rounded-full hover:bg-gray-200 cursor-pointer hidden">
+                             <i class="ph-paperclip-fill text-xl"></i>
+                        </label>
+                        <input type="file" id="file-upload-input" class="hidden">
+                        <button type="submit" class="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 focus:outline-none disabled:bg-gray-400"><i class="ph-paper-plane-tilt-fill text-xl"></i></button>
+                    </form>
+                    <div id="file-upload-progress" class="hidden mt-2 h-2 rounded-full bg-gray-200"><div class="h-full rounded-full bg-indigo-500" style="width: 0%"></div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-60 z-40 hidden"></div>
+    
+    <!-- User Management Modal -->
+    <div id="user-management-modal" class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-4xl z-50 hidden flex flex-col h-[90vh]">
+        <div class="p-4 border-b flex justify-between items-center"><h3 class="text-lg font-medium">વપરાશકર્તા મેનેજમેન્ટ</h3><button type="button" class="cancel-btn p-1 rounded-full hover:bg-gray-200"><i class="ph-x"></i></button></div>
+        <div class="flex-1 flex overflow-hidden">
+            <div class="w-1/2 p-4 border-r overflow-y-auto custom-scrollbar">
+                <h4 class="font-semibold mb-2 text-indigo-700">નવો શિક્ષક ઉમેરો</h4>
+                <form id="add-teacher-form" class="space-y-3 p-3 bg-indigo-50 rounded-lg"><input type="text" id="new-teacher-name" placeholder="શિક્ષકનું પૂરું નામ" required class="w-full p-2 border rounded"><input type="email" id="new-teacher-email" placeholder="શિક્ષકનું ઇમેઇલ" required class="w-full p-2 border rounded"><input type="password" id="new-teacher-password" placeholder="કામચલાઉ પાસવર્ડ" required class="w-full p-2 border rounded"><button type="submit" class="w-full p-2 bg-indigo-600 text-white rounded">શિક્ષક બનાવો</button></form>
+                <hr class="my-4">
+                <h4 class="font-semibold mb-2 text-green-700">નવો વિદ્યાર્થી ઉમેરો</h4>
+                <form id="add-student-form" class="space-y-3 p-3 bg-green-50 rounded-lg"><input type="text" id="new-student-name" placeholder="વિદ્યાર્થીનું પૂરું નામ" required class="w-full p-2 border rounded"><input type="email" id="new-student-email" placeholder="વિદ્યાર્થીનું ઇમેઇલ" required class="w-full p-2 border rounded"><input type="password" id="new-student-password" placeholder="કામચલાઉ પાસવર્ડ" required class="w-full p-2 border rounded"><button type="submit" class="w-full p-2 bg-green-600 text-white rounded">વિદ્યાર્થી બનાવો</button></form>
+            </div>
+            <div class="w-1/2 p-4 overflow-y-auto custom-scrollbar"><h4 class="font-semibold mb-2">બધા વપરાશકર્તાઓ</h4><div id="user-list" class="space-y-2"></div></div>
+        </div>
+    </div>
+
+     <!-- Group Management Modal -->
+    <div id="group-management-modal" class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-2xl z-50 hidden flex flex-col h-[70vh]">
+        <div class="p-4 border-b flex justify-between items-center"><h3 class="text-lg font-medium">ગ્રુપ મેનેજમેન્ટ</h3><button type="button" class="cancel-btn p-1 rounded-full hover:bg-gray-200"><i class="ph-x"></i></button></div>
+        <div class="flex-1 flex overflow-hidden">
+             <div class="w-1/2 p-4 border-r overflow-y-auto custom-scrollbar">
+                <h4 class="font-semibold mb-2">નવું ગ્રુપ બનાવો</h4>
+                <form id="add-group-form" class="space-y-3">
+                    <input type="text" id="new-group-name" placeholder="ગ્રુપનું નામ" required class="w-full p-2 border rounded">
+                    <select id="new-group-type" required class="w-full p-2 border rounded bg-white">
+                        <option value="subject">વિષય ગ્રુપ (ફક્ત શિક્ષક)</option>
+                        <option value="student">વિદ્યાર્થી ગ્રુપ (બધા)</option>
+                    </select>
+                    <button type="submit" class="w-full p-2 bg-indigo-600 text-white rounded">ગ્રુપ બનાવો</button>
+                </form>
+             </div>
+             <div class="w-1/2 p-4 overflow-y-auto custom-scrollbar">
+                <h4 class="font-semibold mb-2">બધા ગ્રુપ્સ</h4>
+                <div id="groups-list-management" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-sm z-50 hidden">
+         <div class="p-4 border-b flex justify-between items-center"><h3 class="text-lg font-medium">પાસવર્ડ બદલો</h3><button type="button" class="cancel-btn p-1 rounded-full hover:bg-gray-200"><i class="ph-x"></i></button></div>
+        <div class="p-4">
+            <form id="change-password-form" class="space-y-4"><input type="password" id="new-password" placeholder="નવો પાસવર્ડ" required class="w-full p-2 border rounded"><input type="password" id="confirm-password" placeholder="નવો પાસવર્ડ કન્ફર્મ કરો" required class="w-full p-2 border rounded"><button type="submit" class="w-full p-2 bg-indigo-600 text-white rounded">પાસવર્ડ અપડેટ કરો</button></form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, setPersistence, browserSessionPersistence, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, addDoc, query, orderBy, serverTimestamp, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+        // --- ફાયરબેઝ કન્ફિગરેશન ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDo8P1FH2ZfPKWtqAi4F0-mSd7UIFwbORc",
+            authDomain: "studentcommunityapp-f6a99.firebaseapp.com",
+            projectId: "studentcommunityapp-f6a99",
+            storageBucket: "studentcommunityapp-f6a99.appspot.com", // Corrected storage bucket URL
+            messagingSenderId: "382029955771",
+            appId: "1:382029955771:web:ef4e7904972549d1231f9e",
+            measurementId: "G-JPC77E9JZY"
+        };
+
+        // --- GLOBAL VARIABLES & DOM ELEMENTS ---
+        let app, auth, db, storage;
+        let currentUser = null;
+        let currentGroupId = null;
+        let currentGroupType = null;
+        let unsubscribeListeners = [];
+        let isInitialLoad = true;
+        
+        // DOM Elements
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const loginScreen = document.getElementById('login-screen');
+        const appScreen = document.getElementById('app-screen');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        const userManagementModal = document.getElementById('user-management-modal');
+        const groupManagementModal = document.getElementById('group-management-modal');
+        const manageUsersBtn = document.getElementById('manage-users-btn');
+        const manageGroupsBtn = document.getElementById('manage-groups-btn');
+        const addTeacherForm = document.getElementById('add-teacher-form');
+        const addStudentForm = document.getElementById('add-student-form');
+        const addGroupForm = document.getElementById('add-group-form');
+        const userList = document.getElementById('user-list');
+        const groupsListManagement = document.getElementById('groups-list-management');
+
+        const changePasswordBtn = document.getElementById('change-password-btn');
+        const changePasswordModal = document.getElementById('change-password-modal');
+        const changePasswordForm = document.getElementById('change-password-form');
+        
+        const subjectGroupsList = document.getElementById('subject-groups-list');
+        const studentGroupsList = document.getElementById('student-groups-list');
+        const channelTitle = document.getElementById('channel-title');
+        const chatMessages = document.getElementById('chat-messages');
+        const messageFormContainer = document.getElementById('message-form-container');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const headerActions = document.getElementById('header-actions');
+        
+        const fileUploadInput = document.getElementById('file-upload-input');
+        const fileUploadLabel = document.getElementById('file-upload-label');
+        const fileUploadProgress = document.getElementById('file-upload-progress');
+        const notificationSound = document.getElementById('notification-sound');
+
+        // --- FIREBASE INITIALIZATION ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            storage = getStorage(app);
+
+            setPersistence(auth, browserSessionPersistence)
+                .then(() => {
+                    onAuthStateChanged(auth, async (user) => {
+                        loadingSpinner.classList.add('hidden');
+                        if (user) {
+                            const userProfileRef = doc(db, 'users', user.uid);
+                            const userProfileSnap = await getDoc(userProfileRef);
+                            if (userProfileSnap.exists()) {
+                                currentUser = { auth: user, profile: userProfileSnap.data() };
+                                initializeAppUI();
+                            } else { await signOut(auth); }
+                        } else { currentUser = null; showLoginScreen(); }
+                    });
+                })
+        } catch (error) { console.error("Firebase Init Error:", error); alert("Firebase કનેક્ટ કરી શકાયું નથી."); }
+        
+        // --- LOGIN/LOGOUT LOGIC ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingSpinner.classList.remove('hidden');
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                if (email === 'admin@system.com') {
+                    try { await signInWithEmailAndPassword(auth, email, password); } 
+                    catch (error) {
+                        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                            await setDoc(doc(db, 'users', userCredential.user.uid), { name: 'Admin', email: email, role: 'teacher' });
+                        } else { throw error; }
+                    }
+                } else { await signInWithEmailAndPassword(auth, email, password); }
+            } catch (error) { alert("ખોટો ઇમેઇલ અથવા પાસવર્ડ."); } 
+            finally { loadingSpinner.classList.add('hidden'); }
+        });
+        
+        logoutBtn.addEventListener('click', () => signOut(auth));
+
+        // --- UI & STATE MANAGEMENT ---
+        function showLoginScreen() {
+            loginScreen.style.display = 'flex';
+            appScreen.classList.add('hidden');
+            unsubscribeAll();
+        }
+
+        function initializeAppUI() {
+            loginScreen.style.display = 'none';
+            appScreen.classList.remove('hidden');
+            const profile = currentUser.profile;
+            document.getElementById('user-name-display').textContent = profile.name;
+            document.getElementById('user-type-display').textContent = profile.role;
+            document.getElementById('user-initials').textContent = profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            if (profile.role === 'teacher') {
+                document.getElementById('teacher-menu').classList.remove('hidden');
+                setupTeacherDashboard();
+            } else { document.getElementById('teacher-menu').classList.add('hidden'); }
+            loadGroups();
+        }
+
+        function loadGroups() {
+            const q = query(collection(db, 'groups'), orderBy('name'));
+            const unsub = onSnapshot(q, (snapshot) => {
+                subjectGroupsList.innerHTML = '';
+                studentGroupsList.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const group = doc.data();
+                    const groupEl = document.createElement('a');
+                    groupEl.href = '#';
+                    groupEl.className = 'group-link flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-300 hover:bg-slate-700 hover:text-white';
+                    groupEl.dataset.groupId = doc.id;
+                    groupEl.innerHTML = `<i class="ph-hash-straight mr-3 text-lg"></i> ${group.name}`;
+                    groupEl.onclick = (e) => { e.preventDefault(); selectGroup(doc.id, group); };
+                    if(group.type === 'subject') {
+                        subjectGroupsList.appendChild(groupEl);
+                    } else {
+                        studentGroupsList.appendChild(groupEl);
+                    }
+                });
+            });
+            unsubscribeListeners.push(unsub);
+        }
+
+        function selectGroup(groupId, groupData) {
+            currentGroupId = groupId;
+            currentGroupType = groupData.type;
+            channelTitle.textContent = groupData.name;
+            chatMessages.innerHTML = '';
+            messageFormContainer.classList.remove('hidden');
+            
+            document.querySelectorAll('.group-link').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.group-link[data-group-id="${groupId}"]`).classList.add('active');
+
+            const isTeacher = currentUser.profile.role === 'teacher';
+            const isStudentInSubjectGroup = !isTeacher && currentGroupType === 'subject';
+            messageInput.disabled = isStudentInSubjectGroup;
+            messageForm.querySelector('button').disabled = isStudentInSubjectGroup;
+            fileUploadLabel.classList.toggle('hidden', !isTeacher);
+            messageInput.placeholder = isStudentInSubjectGroup ? 'ફક્ત શિક્ષકો જ સંદેશ મોકલી શકે છે' : 'તમારો સંદેશ લખો...';
+            
+            isInitialLoad = true;
+            loadMessages(groupId);
+            setupHeaderActions(groupData);
+        }
+
+        function setupHeaderActions(groupData) {
+            headerActions.innerHTML = '';
+            if (groupData.zoomLink) {
+                const joinBtn = document.createElement('a');
+                joinBtn.href = groupData.zoomLink;
+                joinBtn.target = '_blank';
+                joinBtn.className = 'px-3 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 flex items-center';
+                joinBtn.innerHTML = '<i class="ph-video-camera mr-2"></i> ઝૂમ જોઇન કરો';
+                headerActions.appendChild(joinBtn);
+            }
+            if(currentUser.profile.role === 'teacher' && groupData.type === 'subject') {
+                 const updateBtn = document.createElement('button');
+                 updateBtn.className = 'ml-2 px-3 py-2 bg-gray-600 text-white text-sm font-semibold rounded-md hover:bg-gray-700 flex items-center';
+                 updateBtn.innerHTML = '<i class="ph-link mr-2"></i> લિંક અપડેટ કરો';
+                 updateBtn.onclick = async () => {
+                     const newLink = prompt("નવી ઝૂમ મીટિંગ લિંક દાખલ કરો:", groupData.zoomLink || '');
+                     if (newLink !== null) {
+                         await updateDoc(doc(db, 'groups', currentGroupId), { zoomLink: newLink });
+                     }
+                 };
+                 headerActions.appendChild(updateBtn);
+            }
+        }
+
+        function loadMessages(groupId) {
+            unsubscribeListeners.filter(u => u.type === 'messages').forEach(u => u.unsub());
+            const q = query(collection(db, 'groups', groupId, 'messages'), orderBy('timestamp'));
+            const unsub = onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach(change => {
+                    if(change.type === 'added') {
+                        const data = change.doc.data();
+                        renderMessage(data);
+                        if (!isInitialLoad && data.senderId !== currentUser.auth.uid) {
+                            notificationSound.play();
+                        }
+                    }
+                });
+                isInitialLoad = false;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+            unsubscribeListeners.push({type: 'messages', unsub});
+        }
+        
+        function renderMessage(data) {
+            const msgDiv = document.createElement('div');
+            const isSent = data.senderId === currentUser.auth.uid;
+            msgDiv.className = `message p-3 rounded-lg flex flex-col ${isSent ? 'sent' : 'received'}`;
+            
+            const senderName = document.createElement('strong');
+            senderName.className = `text-sm font-bold ${isSent ? 'text-indigo-200' : 'text-gray-900'}`;
+            senderName.textContent = isSent ? ' તમે' : data.senderName;
+
+            const contentEl = document.createElement('div');
+            if (data.type === 'file') {
+                contentEl.innerHTML = `<a href="${data.fileURL}" target="_blank" class="flex items-center mt-1 underline ${isSent ? 'text-white' : 'text-indigo-600'}"><i class="ph-file-arrow-down-fill mr-2"></i><span>${data.fileName}</span></a>`;
+            } else {
+                contentEl.textContent = data.text;
+            }
+
+            const timeEl = document.createElement('span');
+            timeEl.className = `text-xs mt-1 self-end ${isSent ? 'text-indigo-200' : 'text-gray-500'}`;
+            timeEl.textContent = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+            
+            msgDiv.appendChild(senderName);
+            msgDiv.appendChild(contentEl);
+            msgDiv.appendChild(timeEl);
+            chatMessages.appendChild(msgDiv);
+        }
+        
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = messageInput.value.trim();
+            if (text && currentGroupId) {
+                messageInput.value = '';
+                await addDoc(collection(db, 'groups', currentGroupId, 'messages'), {
+                    text: text, type: 'text',
+                    senderId: currentUser.auth.uid,
+                    senderName: currentUser.profile.name,
+                    timestamp: serverTimestamp()
+                });
+            }
+        });
+
+        fileUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || !currentGroupId) return;
+            
+            const storageRef = ref(storage, `groupFiles/${currentGroupId}/${Date.now()}_${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            
+            fileUploadProgress.classList.remove('hidden');
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    fileUploadProgress.firstElementChild.style.width = progress + '%';
+                }, 
+                (error) => {
+                    console.error("Upload failed:", error);
+                    alert("ફાઇલ અપલોડ નિષ્ફળ થયું.");
+                    fileUploadProgress.classList.add('hidden');
+                }, 
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    await addDoc(collection(db, 'groups', currentGroupId, 'messages'), {
+                        type: 'file',
+                        fileURL: downloadURL,
+                        fileName: file.name,
+                        senderId: currentUser.auth.uid,
+                        senderName: currentUser.profile.name,
+                        timestamp: serverTimestamp()
+                    });
+                    fileUploadProgress.classList.add('hidden');
+                    fileUploadInput.value = ''; // Reset input
+                }
+            );
+        });
+        
+        // --- TEACHER DASHBOARD ---
+        function setupTeacherDashboard() {
+            manageUsersBtn.onclick = () => toggleModal(userManagementModal, true);
+            manageGroupsBtn.onclick = () => toggleModal(groupManagementModal, true);
+            
+            // ... (rest of the teacher dashboard code is the same)
+            const usersQuery = collection(db, "users");
+            const unsubUsers = onSnapshot(usersQuery, (snapshot) => {
+                userList.innerHTML = '';
+                snapshot.forEach(docSnap => {
+                    const user = docSnap.data();
+                    const el = document.createElement('div');
+                    el.className = `p-2 border rounded flex justify-between items-center ${user.role === 'teacher' ? 'bg-indigo-50' : 'bg-green-50'}`;
+                    el.innerHTML = `<div><p class="font-semibold">${user.name}</p><p class="text-sm text-gray-600">${user.email}</p></div>
+                    ${currentUser.profile.email !== user.email ? `<button data-id="${docSnap.id}" data-email="${user.email}" class="delete-user-btn text-red-500 hover:text-red-700 p-1"><i class="ph-trash"></i></button>`: ''}
+                    `;
+                    userList.appendChild(el);
+                });
+            });
+            unsubscribeListeners.push(unsubUsers);
+            
+            const groupsQuery = collection(db, "groups");
+            const unsubGroups = onSnapshot(groupsQuery, (snapshot) => {
+                groupsListManagement.innerHTML = '';
+                 snapshot.forEach(doc => {
+                    const group = doc.data();
+                    const el = document.createElement('div');
+                    el.className = 'p-2 border rounded flex justify-between items-center';
+                    el.innerHTML = `<div><p class="font-semibold">${group.name}</p><p class="text-sm text-gray-500">${group.type}</p></div><button data-id="${doc.id}" class="delete-group-btn text-red-500 hover:text-red-700 p-1"><i class="ph-trash"></i></button>`;
+                    groupsListManagement.appendChild(el);
+                });
+            });
+             unsubscribeListeners.push(unsubGroups);
+        }
+
+        userList.addEventListener('click', async e => {
+             if(e.target.closest('.delete-user-btn')) {
+                const btn = e.target.closest('.delete-user-btn');
+                const userId = btn.dataset.id;
+                const userEmail = btn.dataset.email;
+                if(confirm(`શું તમે ખરેખર વપરાશકર્તા ${userEmail} ને કાઢી નાખવા માંગો છો? આ ક્રિયાને પૂર્વવત્ કરી શકાતી નથી.`)) {
+                   alert("આ સુવિધા માટે તમારે ફાયરબેઝ એડમિન SDK સેટઅપ કરવું પડશે. સુરક્ષાના કારણોસર ક્લાયંટ-સાઇડથી વપરાશકર્તાને સંપૂર્ણપણે કાઢી નાખવાની ભલામણ કરવામાં આવતી નથી.");
+                   // NOTE TO DEVELOPER: True user deletion requires a backend function (Firebase Cloud Function)
+                   // that uses the Admin SDK. The following is a client-side attempt that is not secure.
+                   // For now, we will just delete the Firestore record.
+                   try {
+                       await deleteDoc(doc(db, 'users', userId));
+                       alert('વપરાશકર્તા પ્રોફાઇલ કાઢી નાખવામાં આવી છે. Auth રેકોર્ડ હજુ પણ અસ્તિત્વમાં છે.');
+                   } catch (error) {
+                       console.error("Error deleting user profile: ", error);
+                       alert("વપરાશકર્તા પ્રોફાઇલ કાઢી નાખવામાં ભૂલ આવી.");
+                   }
+                }
+            }
+        });
+
+        groupsListManagement.addEventListener('click', async e => {
+            if(e.target.closest('.delete-group-btn')) {
+                const btn = e.target.closest('.delete-group-btn');
+                const groupId = btn.dataset.id;
+                if(confirm('શું તમે ખરેખર આ ગ્રુપને કાઢી નાખવા માંગો છો?')) {
+                    await deleteDoc(doc(db, 'groups', groupId));
+                }
+            }
+        });
+
+        addTeacherForm.addEventListener('submit', (e) => { e.preventDefault(); createNewUser('new-teacher-name', 'new-teacher-email', 'new-teacher-password', 'teacher'); });
+        addStudentForm.addEventListener('submit', (e) => { e.preventDefault(); createNewUser('new-student-name', 'new-student-email', 'new-student-password', 'student'); });
+        addGroupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('new-group-name').value;
+            const type = document.getElementById('new-group-type').value;
+            await addDoc(collection(db, 'groups'), { name, type, createdBy: currentUser.auth.uid });
+            addGroupForm.reset();
+        });
+
+        async function createNewUser(nameId, emailId, passwordId, role) {
+            const name = document.getElementById(nameId).value;
+            const email = document.getElementById(emailId).value;
+            const password = document.getElementById(passwordId).value;
+            loadingSpinner.classList.remove('hidden');
+            try {
+                const tempAppName = 'secondary_app_for_creation';
+                let tempApp = getApps().find(app => app.name === tempAppName) || initializeApp(firebaseConfig, tempAppName);
+                const tempAuth = getAuth(tempApp);
+                const userCredential = await createUserWithEmailAndPassword(tempAuth, email, password);
+                await setDoc(doc(db, "users", userCredential.user.uid), { name, email, role });
+                await signOut(tempAuth);
+                alert(`${role} '${name}' સફળતાપૂર્વક બનાવ્યો.`);
+                addTeacherForm.reset(); addStudentForm.reset();
+            } catch (error) { console.error("Create user error:", error); alert("વપરાશકર્તા બનાવવામાં ભૂલ આવી. ઇમેઇલ પહેલેથી જ વપરાશમાં હોઈ શકે છે."); } 
+            finally { loadingSpinner.classList.add('hidden'); }
+        }
+
+        // --- PASSWORD CHANGE ---
+        changePasswordBtn.addEventListener('click', () => toggleModal(changePasswordModal, true));
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            if (newPassword.length < 6) { alert("પાસવર્ડ ઓછામાં ઓછો 6 અક્ષરનો હોવો જોઈએ."); return; }
+            if (newPassword !== confirmPassword) { alert("બંને પાસવર્ડ મેળ ખાતા નથી."); return; }
+            loadingSpinner.classList.remove('hidden');
+            try {
+                await updatePassword(auth.currentUser, newPassword);
+                alert("પાસવર્ડ સફળતાપૂર્વક બદલાઈ ગયો છે!");
+                toggleModal(changePasswordModal, false);
+                changePasswordForm.reset();
+            } catch (error) { console.error("Password update error:", error); alert("પાસવર્ડ બદલવામાં ભૂલ આવી."); } 
+            finally { loadingSpinner.classList.add('hidden'); }
+        });
+
+        // --- UTILITY FUNCTIONS ---
+        function unsubscribeAll() {
+            unsubscribeListeners.forEach(u => typeof u.unsub === 'function' ? u.unsub() : u());
+            unsubscribeListeners = [];
+        }
+
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const allModals = document.querySelectorAll('.modal');
+        const toggleModal = (modal, show) => { modalBackdrop.classList.toggle('hidden', !show); if (modal) modal.classList.toggle('hidden', !show); };
+        modalBackdrop.addEventListener('click', () => allModals.forEach(m => toggleModal(m, false)));
+        document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', (e) => toggleModal(e.target.closest('.modal'), false)));
+    </script>
+</body>
+</html>
+
